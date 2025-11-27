@@ -1,4 +1,3 @@
 repository "2DShooter 2025-11-25_22-58-12/2DShooter@18967968496043@cloud"
   path "/"
-    br "/main"
-    co "/main"
+    smartbranch "/main"

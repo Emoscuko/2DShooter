@@ -1,55 +1,60 @@
 using UnityEngine;
-using UnityEngine.EventSystems; // Required for UI touch detection
+using UnityEngine.EventSystems;
 
 public class VirtualJoystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointerDownHandler
 {
     [Header("Settings")]
     public RectTransform joystickHandle; // The inner circle
-    public float handleRange = 100f;     // How far the handle can move
 
-    [HideInInspector] public Vector2 inputVector; // We read this from other scripts!
+    [HideInInspector] public Vector2 inputVector; // Output direction
 
     private Vector2 originalPosition;
+    private RectTransform joystickBackground;
 
     void Start()
     {
+        joystickBackground = GetComponent<RectTransform>();
         originalPosition = joystickHandle.anchoredPosition;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
         Vector2 position;
-        // Calculate where we are touching relative to the joystick background
+
+        // 1. Convert Screen Touch to Local UI Coordinates
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            GetComponent<RectTransform>(), 
-            eventData.position, 
-            eventData.pressEventCamera, 
+            joystickBackground,
+            eventData.position,
+            eventData.pressEventCamera,
             out position))
         {
-            // Normalize the position (0 to 1)
-            position.x = (position.x / GetComponent<RectTransform>().sizeDelta.x);
-            position.y = (position.y / GetComponent<RectTransform>().sizeDelta.y);
+            // 2. Calculate offsets relative to size (Fixing the Center Pivot issue)
+            // If the background is 200 wide, the radius is 100.
+            // We divide position by radius to get a value between -1 and 1.
+            position.x = (position.x / joystickBackground.sizeDelta.x) * 2;
+            position.y = (position.y / joystickBackground.sizeDelta.y) * 2;
 
-            // Calculate input vector (Direction)
-            inputVector = new Vector2(position.x * 2 - 1, position.y * 2 - 1);
+            // 3. Output the Input Vector
+            inputVector = new Vector2(position.x, position.y);
+
+            // Normalize so diagonal isn't faster (limit length to 1)
             inputVector = (inputVector.magnitude > 1.0f) ? inputVector.normalized : inputVector;
 
-            // Move the handle visually
+            // 4. Move the Visual Handle
             joystickHandle.anchoredPosition = new Vector2(
-                inputVector.x * (GetComponent<RectTransform>().sizeDelta.x / 2),
-                inputVector.y * (GetComponent<RectTransform>().sizeDelta.y / 2)
+                inputVector.x * (joystickBackground.sizeDelta.x / 2),
+                inputVector.y * (joystickBackground.sizeDelta.y / 2)
             );
         }
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        OnDrag(eventData); // Start dragging immediately
+        OnDrag(eventData);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        // Reset handle when finger is lifted
         inputVector = Vector2.zero;
         joystickHandle.anchoredPosition = originalPosition;
     }
