@@ -5,41 +5,41 @@ public class WeaponPivot : MonoBehaviour
     [Header("References")]
     public PlayerMovement player;
     public SpriteRenderer gunRenderer;
-
-    [Header("Settings")]
-    public float shoulderOffset = 0.2f; // How far right the shoulder is
+    public VirtualJoystick aimJoystick;
 
     void Update()
     {
-        if (player.facingDir == Vector2.zero) return;
+        Vector2 aimDirection = Vector2.zero;
 
-        // 1. ROTATION (Aiming)
-        float angle = Mathf.Atan2(player.facingDir.y, player.facingDir.x) * Mathf.Rad2Deg;
+        // 1. GET INPUT (Mouse or Joystick)
+        if (aimJoystick != null && aimJoystick.inputVector != Vector2.zero)
+        {
+            aimDirection = aimJoystick.inputVector;
+        }
+        else
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            aimDirection = (mousePos - player.transform.position).normalized;
+        }
+
+        // 2. ORBIT ROTATION (The Invisible Circle)
+        // We simply rotate the parent. The child (Gun) orbits because it is offset.
+        float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, angle);
 
-        // 2. SHOULDER SWAP (The Fix!)
-        // If looking Left, move pivot to Left Shoulder (-X).
-        // If looking Right, move pivot to Right Shoulder (+X).
-        Vector3 currentPos = transform.localPosition;
-        
-        if (player.facingDir.x < 0)
-            currentPos.x = -shoulderOffset; // Move to Left
-        else if (player.facingDir.x > 0)
-            currentPos.x = shoulderOffset;  // Move to Right
-            
-        transform.localPosition = currentPos;
-
-
-        // 3. FLIP GUN Y (Keep gun upright)
-        if (player.facingDir.x < 0)
+        // 3. FLIP GUN (Keep it upright)
+        // If aiming left (angle is roughly between 90 and -90 degrees on the left side)
+        // We flip the sprite so it doesn't look upside down.
+        if (aimDirection.x < 0)
             gunRenderer.flipY = true;
-        else if (player.facingDir.x > 0)
+        else
             gunRenderer.flipY = false;
 
-        // 4. SORTING (Behind/Front)
-        if (player.facingDir.y > 0.1f)
-            gunRenderer.sortingOrder = -1;
+        // 4. VISUAL SORTING (Optional Polish)
+        // Put gun behind player when aiming UP
+        if (aimDirection.y > 0.1f)
+            gunRenderer.sortingOrder = -1; // Behind
         else
-            gunRenderer.sortingOrder = 1;
+            gunRenderer.sortingOrder = 1;  // Front
     }
 }
