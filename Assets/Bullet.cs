@@ -16,19 +16,18 @@ public class Bullet : MonoBehaviour
         Destroy(gameObject, lifeTime);
     }
 
-    
+
     void OnTriggerEnter2D(Collider2D hitInfo)
     {
-        // Check if we hit something with the "Enemy" component
+        // Try to get the EnemyAI component
         EnemyAI enemy = hitInfo.GetComponent<EnemyAI>();
-        
+
         if (enemy != null)
         {
-            enemy.TakeDamage(10); // Deal 10 damage
-            Destroy(gameObject);  // Destroy the bullet
+            // NEW: Pass 'transform.position' so the enemy knows where the hit came from
+            enemy.TakeDamage(10, transform.position);
+
+            Destroy(gameObject); // Destroy bullet
         }
-        
-        // Optional: Destroy bullet on walls too
-        // if (hitInfo.name != "Player") Destroy(gameObject);
     }
 }
