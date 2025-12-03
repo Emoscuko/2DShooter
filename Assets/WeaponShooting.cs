@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class WeaponShooting : MonoBehaviour
 {
+    [Header("Audio")]
+    public AudioSource audioSource;  // The component we just added
+    public AudioClip shootSound;     // The actual MP3/WAV file
     [Header("Prefabs")]
     public GameObject bulletPrefab; // Drag your 'Bullet' blue prefab here
 
@@ -28,5 +31,9 @@ public class WeaponShooting : MonoBehaviour
 
         // Spawn the bullet at the FirePoint position, matching the FirePoint's rotation
         Instantiate(bulletPrefab, firePoint.position, firePoint.rotation);
+        if (audioSource != null && shootSound != null)
+        {
+            audioSource.PlayOneShot(shootSound);
+        }
     }
 }

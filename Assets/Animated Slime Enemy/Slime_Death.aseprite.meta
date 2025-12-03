@@ -76,8 +76,8 @@ ScriptedImporter:
     importHiddenLayers: 0
     layerImportMode: 1
     defaultPivotSpace: 0
-    defaultPivotAlignment: 0
-    customPivotPosition: {x: 0.5, y: 0.5}
+    defaultPivotAlignment: 9
+    customPivotPosition: {x: 0.3, y: 0.5}
     mosaicPadding: 4
     spritePadding: 0
     generateModelPrefab: 1
@@ -91,8 +91,8 @@ ScriptedImporter:
     importHiddenLayers: 0
     layerImportMode: 1
     defaultPivotSpace: 0
-    defaultPivotAlignment: 0
-    customPivotPosition: {x: 0.5, y: 0.5}
+    defaultPivotAlignment: 9
+    customPivotPosition: {x: 0.3, y: 0.5}
     mosaicPadding: 4
     spritePadding: 0
     generateModelPrefab: 1
@@ -102,7 +102,7 @@ ScriptedImporter:
     generateIndividualEvents: 1
     generateSpriteAtlas: 1
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638998630569703660
+  platformSettingsDirtyTick: 639000946084106040
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -129,7 +129,7 @@ ScriptedImporter:
   animatedSpriteImportData:
   - name: Frame_0
     originalName: 
-    pivot: {x: 0.5, y: 0.4}
+    pivot: {x: 0.042857174, y: 0.4}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -150,7 +150,7 @@ ScriptedImporter:
     uvTransform: {x: 29, y: 4}
   - name: Frame_1
     originalName: 
-    pivot: {x: 0.5, y: 0.44444442}
+    pivot: {x: 0.042857174, y: 0.44444442}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -171,7 +171,7 @@ ScriptedImporter:
     uvTransform: {x: 4, y: 22}
   - name: Frame_2
     originalName: 
-    pivot: {x: 0.5, y: 0.44444442}
+    pivot: {x: 0.042857174, y: 0.44444442}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -192,7 +192,7 @@ ScriptedImporter:
     uvTransform: {x: 26, y: 22}
   - name: Frame_3
     originalName: 
-    pivot: {x: 0.5, y: 0.44444442}
+    pivot: {x: 0.042857174, y: 0.44444442}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
@@ -213,7 +213,7 @@ ScriptedImporter:
     uvTransform: {x: 4, y: 39}
   - name: Frame_4
     originalName: 
-    pivot: {x: 0.5294118, y: 0.6}
+    pivot: {x: 0.1529412, y: 0.6}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     customData: 
