@@ -1335,6 +1335,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   health: 500
   speed: 2.5
+  healthBarFill: {fileID: 0}
+  healthCanvas: {fileID: 0}
   attackRange: 3
   attackDelay: 1
   attackCooldown: 2

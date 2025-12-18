@@ -33,26 +33,30 @@ public class BossAI : Enemy
     {
         if (player == null || isDead) return;
 
-        // --- NEW: THE MOVEMENT LOCK ---
-        // If we are busy attacking or hurting, STOP moving immediately.
+        // 1. MOVEMENT LOCK (Attacking or Hurt)
         if (isAttacking || isHurt)
         {
             rb.linearVelocity = Vector2.zero;
-            return; // Skip the rest of the movement code below
+            if (animator != null) animator.SetFloat("Speed", 0f); // Force Idle
+            return;
         }
 
         float distance = Vector2.Distance(transform.position, player.position);
 
-        // Flip Logic
+        // 2. FLIP LOGIC
         if (transform.position.x < player.position.x)
             spriteRenderer.flipX = true;
         else
             spriteRenderer.flipX = false;
 
-        // Decision Logic
+        // 3. DECISION LOGIC
         if (distance <= attackRange)
         {
-            rb.linearVelocity = Vector2.zero; // Stop moving to prepare attack
+            // --- STOPPED (In Range) ---
+            rb.linearVelocity = Vector2.zero;
+
+            // Tell animator we are STOPPED
+            if (animator != null) animator.SetFloat("Speed", 0f);
 
             if (attackTimer <= 0)
             {
@@ -62,7 +66,12 @@ public class BossAI : Enemy
         }
         else
         {
+            // --- MOVING (Chasing) ---
             MoveTowardsPlayer();
+
+            // Tell animator we are MOVING
+            // We set it to 1f (which is > 0.01f), so it will transition to Walk
+            if (animator != null) animator.SetFloat("Speed", 1f);
         }
 
         if (attackTimer > 0) attackTimer -= Time.fixedDeltaTime;
