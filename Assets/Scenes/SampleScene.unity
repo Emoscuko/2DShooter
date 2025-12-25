@@ -1379,9 +1379,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 5aabce829134e4320a757b0222b9d88c, type: 3}
     - target: {fileID: 2908988137345450554, guid: 294bcbe10ba1942448ef7c40f4a23286, type: 3}
+      propertyPath: aimJoystick
+      value: 
+      objectReference: {fileID: 7062734799922613253}
+    - target: {fileID: 2908988137345450554, guid: 294bcbe10ba1942448ef7c40f4a23286, type: 3}
       propertyPath: audioSource
       value: 
       objectReference: {fileID: 993153737}
+    - target: {fileID: 2908988137345450554, guid: 294bcbe10ba1942448ef7c40f4a23286, type: 3}
+      propertyPath: moveJoystick
+      value: 
+      objectReference: {fileID: 1941899895}
     - target: {fileID: 3164955201664699258, guid: 294bcbe10ba1942448ef7c40f4a23286, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.4
