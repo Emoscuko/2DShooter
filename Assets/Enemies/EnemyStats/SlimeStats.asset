@@ -15,4 +15,4 @@ MonoBehaviour:
   maxHealth: 30
   moveSpeed: 3
   knockbackStrength: 5
-  deathSound: {fileID: 0}
+  deathSound: {fileID: 8300000, guid: 479b378721a374198bae37766f11bd08, type: 3}
