@@ -3,60 +3,52 @@ using System.Collections;
 
 public class EnemyAI : Enemy
 {
-    [Header("Slime Specifics")]
-    public float knockbackStrength = 5f;
-
-
     [Header("References")]
     public Animator animator;
     public AudioSource audioSource;
-    public AudioClip deathSound;
 
     private bool isKnockedBack = false;
+    
+    // Helper property to get the specific stats easily
+    private SlimeStats SlimeData => stats as SlimeStats;
 
     protected override void Start()
     {
-        base.Start(); // Run the Parent's setup (Finding Player + Rigidbody)
+        base.Start(); // Run Parent setup
 
-        // If these aren't assigned in Inspector, try to find them automatically
         if (animator == null) animator = GetComponent<Animator>();
-        if (enemyCollider == null) enemyCollider = GetComponent<Collider2D>();
         if (audioSource == null) audioSource = GetComponent<AudioSource>();
+        
+        // Safety check
+        if (SlimeData == null) Debug.LogWarning("Assigned Stats are NOT SlimeStats on " + gameObject.name);
     }
 
     void FixedUpdate()
     {
-        // Don't move if dead or being knocked back
         if (isDead || isKnockedBack) return;
-
-        MoveTowardsPlayer(); // Use the movement logic from the Parent script
+        MoveTowardsPlayer(); 
     }
 
-    // OVERRIDE: This runs INSTEAD of the simple "health -=" in the parent
     public override void TakeDamage(float amount, Vector2 hitSource)
     {
         if (isDead) return;
 
-        // 1. Let the Parent script handle the math (Health subtraction)
         base.TakeDamage(amount, hitSource);
 
-        // 2. Play the Hurt animation
         if (animator != null) animator.SetTrigger("Hurt");
-
-        // 3. Do the Slime-specific Knockback
         Knockback(hitSource);
     }
 
     public void Knockback(Vector2 sourcePosition)
     {
-        if (isDead) return;
+        if (isDead || SlimeData == null) return;
 
         Vector2 pushDir = (transform.position - (Vector3)sourcePosition).normalized;
         isKnockedBack = true;
 
-        // Stop current movement so the push force feels clean
         rb.linearVelocity = Vector2.zero;
-        rb.AddForce(pushDir * knockbackStrength, ForceMode2D.Impulse);
+        // Access knockbackStrength from the Data File
+        rb.AddForce(pushDir * SlimeData.knockbackStrength, ForceMode2D.Impulse);
 
         StartCoroutine(ResetKnockback());
     }
@@ -75,14 +67,8 @@ public class EnemyAI : Enemy
         if (collision.gameObject.CompareTag("Player"))
         {
             PlayerHealth playerHP = collision.gameObject.GetComponent<PlayerHealth>();
-
-            // Deal 1 Damage
-            if (playerHP != null)
-            {
-                playerHP.TakeDamage(1);
-            }
-
-            // Bounce back
+            if (playerHP != null) playerHP.TakeDamage(1);
+            
             Knockback(collision.transform.position);
         }
     }
@@ -90,21 +76,17 @@ public class EnemyAI : Enemy
     protected override void Die()
     {
         if (isDead) return;
-
         isDead = true;
-
-        // --- NEW: Give XP before destroying ---
-        GrantXP(20f);
-        // --------------------------------------
 
         if (animator != null) animator.SetTrigger("Die");
         if (enemyCollider != null) enemyCollider.enabled = false;
 
-        rb.linearVelocity = Vector2.zero; // Stop moving
+        rb.linearVelocity = Vector2.zero;
 
-        if (audioSource != null && deathSound != null)
+        // Access deathSound from the Data File
+        if (audioSource != null && SlimeData != null && SlimeData.deathSound != null)
         {
-            audioSource.PlayOneShot(deathSound);
+            audioSource.PlayOneShot(SlimeData.deathSound);
         }
 
         Destroy(gameObject, 1f);
