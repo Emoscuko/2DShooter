@@ -2,44 +2,35 @@ using UnityEngine;
 
 public class WeaponPivot : MonoBehaviour
 {
-    [Header("References")]
-    public PlayerMovement player;
-    public SpriteRenderer gunRenderer;
-    public VirtualJoystick aimJoystick;
+    public VirtualJoystick aimJoystick; // Assign your right-hand joystick here
 
     void Update()
     {
-        Vector2 aimDirection = Vector2.zero;
+        Vector2 direction = Vector2.zero;
 
-        // 1. GET INPUT (Mouse or Joystick)
+        // 1. Priority: Mobile Joystick
         if (aimJoystick != null && aimJoystick.inputVector != Vector2.zero)
         {
-            aimDirection = aimJoystick.inputVector;
+            direction = aimJoystick.inputVector;
         }
+        // 2. Fallback: PC Mouse
         else
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            aimDirection = (mousePos - player.transform.position).normalized;
+            direction = (mousePos - transform.position).normalized;
         }
 
-        // 2. ORBIT ROTATION (The Invisible Circle)
-        // We simply rotate the parent. The child (Gun) orbits because it is offset.
-        float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
+        // 3. Apply Rotation
+        if (direction != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
 
-        // 3. FLIP GUN (Keep it upright)
-        // If aiming left (angle is roughly between 90 and -90 degrees on the left side)
-        // We flip the sprite so it doesn't look upside down.
-        if (aimDirection.x < 0)
-            gunRenderer.flipY = true;
-        else
-            gunRenderer.flipY = false;
-
-        // 4. VISUAL SORTING (Optional Polish)
-        // Put gun behind player when aiming UP
-        if (aimDirection.y > 0.1f)
-            gunRenderer.sortingOrder = -1; // Behind
-        else
-            gunRenderer.sortingOrder = 1;  // Front
+            // Flip the gun sprite so it's not upside down when looking left
+            if (angle > 90 || angle < -90)
+                transform.localScale = new Vector3(1, -1, 1);
+            else
+                transform.localScale = new Vector3(1, 1, 1);
+        }
     }
 }

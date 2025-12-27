@@ -39,8 +39,8 @@ public class PlayerMovement : MonoBehaviour
             movement = moveJoystick.inputVector;
         }
 
-        // 2. Dash Input for PC (Spacebar)
-        if (Input.GetKeyDown(KeyCode.Space))
+        // 2. Dash Input for PC (Left Shift)
+        if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             AttemptDash();
         }

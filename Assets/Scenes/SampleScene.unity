@@ -166,6 +166,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6411682870893921104, guid: 294bcbe10ba1942448ef7c40f4a23286, type: 3}
   m_PrefabInstance: {fileID: 7559230071628992966}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &16674678 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5803591065169515893, guid: 294bcbe10ba1942448ef7c40f4a23286, type: 3}
+  m_PrefabInstance: {fileID: 7559230071628992966}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 16674663}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 848e19b0a1da146369a2f8fd3918e15a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
 --- !u!114 &555544706 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3051133568679771161, guid: 77a51c03069ea46c0807e9a157594f28, type: 3}
@@ -363,6 +374,11 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!224 &1118553057 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 5167398664897286546, guid: 77a51c03069ea46c0807e9a157594f28, type: 3}
+  m_PrefabInstance: {fileID: 2573839045649540253}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1941899895 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4326537004756058791, guid: 270b0bc2ae3484e3a856de62978cfa08, type: 3}
@@ -374,6 +390,95 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7e20486b388e456bb8223e36b000fe4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VirtualJoystick
+--- !u!1 &1987380757
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1987380758}
+  - component: {fileID: 1987380761}
+  - component: {fileID: 1987380760}
+  - component: {fileID: 1987380759}
+  m_Layer: 5
+  m_Name: DashButton
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1987380758
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987380757}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1118553057}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 459, y: -183}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1987380759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987380757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d336437380841f78b07022670b5d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DashButton
+  player: {fileID: 16674678}
+--- !u!114 &1987380760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987380757}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9716981, g: 0.9716981, b: 0.9716981, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 1795563773755186489, guid: b3aec8f0940284229a9ff8fba256eef8, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1987380761
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987380757}
+  m_CullTransparentMesh: 1
 --- !u!1001 &2087598128
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -435,6 +540,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83f5a4cdca0554c3f974e0fea1843deb, type: 3}
+--- !u!212 &2100295748 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3132012247039474475, guid: 294bcbe10ba1942448ef7c40f4a23286, type: 3}
+  m_PrefabInstance: {fileID: 7559230071628992966}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &463452140508638133
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -797,7 +907,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5167398664897286546, guid: 77a51c03069ea46c0807e9a157594f28, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1987380758}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77a51c03069ea46c0807e9a157594f28, type: 3}
 --- !u!1001 &3925816837032471007
@@ -1471,6 +1584,10 @@ PrefabInstance:
       propertyPath: moveJoystick
       value: 
       objectReference: {fileID: 1941899895}
+    - target: {fileID: 2908988137345450554, guid: 294bcbe10ba1942448ef7c40f4a23286, type: 3}
+      propertyPath: weaponRenderer
+      value: 
+      objectReference: {fileID: 2100295748}
     - target: {fileID: 3164955201664699258, guid: 294bcbe10ba1942448ef7c40f4a23286, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.4

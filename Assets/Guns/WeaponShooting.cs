@@ -2,36 +2,82 @@ using UnityEngine;
 
 public class WeaponShooting : MonoBehaviour
 {
-    [Header("Weapon Configuration")]
-    public WeaponData weaponData; // Drag your Pistol Data here!
-
-    [Header("Setup")]
+    [Header("Weapon Setup")]
+    public WeaponData currentWeapon; // Drag your Pistol Data here by default
+    public Transform firePoint;      // Where the bullet comes out
+    public SpriteRenderer weaponRenderer; // Reference to the Gun Sprite inside the player
+    [Header("Audio")]
     public AudioSource audioSource;
-    public Transform firePoint;
+    private float nextFireTime = 0f;
 
-    private float nextShotTime;
+    void Start()
+    {
+        // Ensure the visual matches the data on game start
+        if (currentWeapon != null)
+            EquipWeapon(currentWeapon);
+    }
 
     void Update()
     {
-        if (weaponData == null) return;
-
-        if ((Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space)) && Time.time >= nextShotTime)
+        // PC Input
+        if (Input.GetMouseButton(0))
         {
             Shoot();
-            // Use data from ScriptableObject
-            nextShotTime = Time.time + weaponData.timeBetweenShots;
         }
     }
 
-    void Shoot()
+    // Call this from your Mobile Button or PC Input
+    public void Shoot()
     {
-        if (firePoint == null || weaponData.bulletPrefab == null) return;
+        if (currentWeapon == null) return;
 
-        Instantiate(weaponData.bulletPrefab, firePoint.position, firePoint.rotation);
-
-        if (audioSource != null && weaponData.shootSound != null)
+        if (Time.time >= nextFireTime)
         {
-            audioSource.PlayOneShot(weaponData.shootSound);
+            // Calculate next time allowed to shoot
+            nextFireTime = Time.time + currentWeapon.fireRate;
+
+            FireBullet();
+            PlayShootSound();
+        }
+    }
+    void PlayShootSound()
+    {
+        if (currentWeapon.shootSound != null && audioSource != null)
+        {
+            // PlayOneShot is best for shooting because sounds can overlap 
+            // without cutting each other off
+            audioSource.PlayOneShot(currentWeapon.shootSound);
+        }
+    }
+    void FireBullet()
+    {
+        // 1. Create the bullet
+        GameObject bulletObj = Instantiate(currentWeapon.bulletPrefab, firePoint.position, firePoint.rotation);
+
+        // 2. Get the bullet script
+        Bullet bulletScript = bulletObj.GetComponent<Bullet>();
+
+        // 3. Inject the stats from the Weapon Data
+        if (bulletScript != null)
+        {
+            bulletScript.Initialize(
+                currentWeapon.damage,
+                currentWeapon.bulletSpeed,
+                firePoint.right, // Assuming gun points right
+                currentWeapon.bulletLifetime
+            );
+        }
+    }
+
+    // Call this to switch weapons
+    public void EquipWeapon(WeaponData newWeapon)
+    {
+        currentWeapon = newWeapon;
+
+        // Update the sprite to look like the new gun
+        if (weaponRenderer != null)
+        {
+            weaponRenderer.sprite = newWeapon.weaponSprite;
         }
     }
 }
