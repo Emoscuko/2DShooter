@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
   bulletPrefab: {fileID: 7938840130412514850, guid: c3f4068092a9e44d899ab9a47118ddf0, type: 3}
   timeBetweenShots: 0.2
-  shootSound: {fileID: 0}
+  shootSound: {fileID: 8300000, guid: 5aabce829134e4320a757b0222b9d88c, type: 3}

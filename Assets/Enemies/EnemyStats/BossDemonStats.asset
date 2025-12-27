@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b06f098e451449f0bf2b4dffb075e4c, type: 3}
   m_Name: BossDemonStats
   m_EditorClassIdentifier: Assembly-CSharp::BossStats
-  maxHealth: 30
+  maxHealth: 100
   moveSpeed: 3
   attackRange: 2
   attackDamage: 2
