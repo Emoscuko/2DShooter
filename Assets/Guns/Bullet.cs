@@ -2,38 +2,37 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private int damage;
+    private int damage; // Not public, set by Initialize
     private Rigidbody2D rb;
 
-    // This function is called by the Gun when the bullet is created
-    public void Initialize(int weaponDamage, float speed, Vector2 direction, float lifetime)
+    // Call this from WeaponShooting to set the stats
+    public void Initialize(int weaponDamage, float speed, float lifetime)
     {
         rb = GetComponent<Rigidbody2D>();
         damage = weaponDamage;
 
-        // Destroy bullet after X seconds so it doesn't fly forever
+        // Set velocity using the speed passed in
+        // Note: transform.right works because we rotate the bullet when spawning it
+        rb.linearVelocity = transform.right * speed;
+
+        // Destroy bullet automatically after lifetime expires
         Destroy(gameObject, lifetime);
-
-        // Set velocity
-        rb.linearVelocity = direction * speed;
-
-        // Rotate bullet to face direction
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        transform.rotation = Quaternion.Euler(0, 0, angle);
     }
 
-    void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D hitInfo)
     {
-        // Example Enemy Hit Logic
-        if (collision.CompareTag("Enemy"))
+        Enemy enemy = hitInfo.GetComponent<Enemy>();
+
+        if (enemy != null)
         {
-            // Assuming you have an Enemy script with TakeDamage
-            // collision.GetComponent<Enemy>()?.TakeDamage(damage); 
+            // Use the variable 'damage' instead of hardcoded 10
+            enemy.TakeDamage(damage, transform.position);
             Destroy(gameObject);
         }
-        else if (!collision.CompareTag("Player") && !collision.CompareTag("Bullet"))
+
+        // Destroy on walls (make sure your walls have the tag "Wall" or "Ground")
+        if (hitInfo.gameObject.CompareTag("Wall") || hitInfo.gameObject.CompareTag("Ground"))
         {
-            // Destroy on walls
             Destroy(gameObject);
         }
     }

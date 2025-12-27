@@ -3,78 +3,63 @@ using UnityEngine;
 public class WeaponShooting : MonoBehaviour
 {
     [Header("Weapon Setup")]
-    public WeaponData currentWeapon; // Drag your Pistol Data here by default
-    public Transform firePoint;      // Where the bullet comes out
-    public SpriteRenderer weaponRenderer; // Reference to the Gun Sprite inside the player
+    public WeaponData currentWeapon; // Drag your PistolData or SniperData here!
+    public Transform firePoint;      // Keep this assigned
+    public SpriteRenderer weaponRenderer; // Assign the gun sprite to change it visually
+
     [Header("Audio")]
     public AudioSource audioSource;
-    private float nextFireTime = 0f;
 
-    void Start()
-    {
-        // Ensure the visual matches the data on game start
-        if (currentWeapon != null)
-            EquipWeapon(currentWeapon);
-    }
+    private float nextFireTime;
 
     void Update()
     {
-        // PC Input
-        if (Input.GetMouseButton(0))
+        // PC Input (Mobile input should call Shoot() directly via button)
+        // We check currentWeapon.fireRate now
+        if ((Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space)) && Time.time >= nextFireTime)
         {
-            Shoot();
+            AttemptShoot();
         }
     }
 
-    // Call this from your Mobile Button or PC Input
-    public void Shoot()
+    public void AttemptShoot()
     {
         if (currentWeapon == null) return;
 
         if (Time.time >= nextFireTime)
         {
-            // Calculate next time allowed to shoot
             nextFireTime = Time.time + currentWeapon.fireRate;
+            Shoot();
+        }
+    }
 
-            FireBullet();
-            PlayShootSound();
-        }
-    }
-    void PlayShootSound()
+    void Shoot()
     {
-        if (currentWeapon.shootSound != null && audioSource != null)
-        {
-            // PlayOneShot is best for shooting because sounds can overlap 
-            // without cutting each other off
-            audioSource.PlayOneShot(currentWeapon.shootSound);
-        }
-    }
-    void FireBullet()
-    {
+        if (currentWeapon.bulletPrefab == null || firePoint == null) return;
+
         // 1. Create the bullet
         GameObject bulletObj = Instantiate(currentWeapon.bulletPrefab, firePoint.position, firePoint.rotation);
 
-        // 2. Get the bullet script
+        // 2. Pass the DATA to the bullet
         Bullet bulletScript = bulletObj.GetComponent<Bullet>();
-
-        // 3. Inject the stats from the Weapon Data
         if (bulletScript != null)
         {
-            bulletScript.Initialize(
-                currentWeapon.damage,
-                currentWeapon.bulletSpeed,
-                firePoint.right, // Assuming gun points right
-                currentWeapon.bulletLifetime
-            );
+            bulletScript.Initialize(currentWeapon.damage, currentWeapon.bulletSpeed, currentWeapon.bulletLifetime);
+        }
+
+        // 3. Play Sound from the Data
+        if (audioSource != null && currentWeapon.shootSound != null)
+        {
+            // Randomize pitch slightly for better feel
+            audioSource.pitch = Random.Range(0.9f, 1.1f);
+            audioSource.PlayOneShot(currentWeapon.shootSound);
         }
     }
 
-    // Call this to switch weapons
+    // Call this to change weapons (e.g. from a Pickup or Button)
     public void EquipWeapon(WeaponData newWeapon)
     {
         currentWeapon = newWeapon;
-
-        // Update the sprite to look like the new gun
         if (weaponRenderer != null)
         {
             weaponRenderer.sprite = newWeapon.weaponSprite;
