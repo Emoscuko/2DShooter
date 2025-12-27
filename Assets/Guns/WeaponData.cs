@@ -5,19 +5,19 @@ public class WeaponData : ScriptableObject
 {
     [Header("Visuals")]
     public string weaponName;
-    public Sprite weaponSprite; // The picture of the gun
-    public GameObject bulletPrefab; // The specific bullet this gun shoots
+    public GameObject weaponPrefab;
+    public Sprite icon;
+    public GameObject bulletPrefab;
+    
+    // NEW: How far from the player center should this gun sit?
+    public float weaponHoldDistance = 1.2f; 
 
     [Header("Stats")]
-    public float fireRate;      // Time between shots (0.2 for pistol, 1.0 for sniper)
-    public int damage;          // How much hp it removes
-    public float bulletSpeed;   // How fast the bullet flies
-    public float bulletLifetime; // How long before bullet disappears
+    public float fireRate;      
+    public int damage;          
+    public float bulletSpeed;   
+    public float bulletLifetime; 
 
     [Header("Audio")]
     public AudioClip shootSound;
-    
-    //public AudioClip emptyClip;
-
-    //public AudioClip reloadSound;
 }

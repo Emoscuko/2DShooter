@@ -2,21 +2,27 @@ using UnityEngine;
 
 public class WeaponShooting : MonoBehaviour
 {
-    [Header("Weapon Setup")]
-    public WeaponData currentWeapon; // Drag your PistolData or SniperData here!
-    public Transform firePoint;      // Keep this assigned
-    public SpriteRenderer weaponRenderer; // Assign the gun sprite to change it visually
-
+    [Header("Setup")]
+    public WeaponData currentWeapon; 
+    public Transform weaponPivot;
+    
     [Header("Audio")]
     public AudioSource audioSource;
 
+    private GameObject currentGunInstance;
+    private Transform currentFirePoint;
     private float nextFireTime;
+
+    void Awake()
+    {
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+        if (currentWeapon != null) EquipWeapon(currentWeapon);
+    }
 
     void Update()
     {
-        // PC Input (Mobile input should call Shoot() directly via button)
-        // We check currentWeapon.fireRate now
-        if ((Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space)) && Time.time >= nextFireTime)
+        // PC Input
+        if ((Input.GetMouseButton(0) || Input.GetKey(KeyCode.Space)))
         {
             AttemptShoot();
         }
@@ -24,45 +30,53 @@ public class WeaponShooting : MonoBehaviour
 
     public void AttemptShoot()
     {
-        if (currentWeapon == null) return;
+        if (currentWeapon == null || Time.time < nextFireTime) return;
 
-        if (Time.time >= nextFireTime)
-        {
-            nextFireTime = Time.time + currentWeapon.fireRate;
-            Shoot();
-        }
+        nextFireTime = Time.time + currentWeapon.fireRate;
+        Shoot();
     }
 
     void Shoot()
     {
-        if (currentWeapon.bulletPrefab == null || firePoint == null) return;
+        if (currentWeapon.bulletPrefab == null || currentFirePoint == null) return;
 
-        // 1. Create the bullet
-        GameObject bulletObj = Instantiate(currentWeapon.bulletPrefab, firePoint.position, firePoint.rotation);
-
-        // 2. Pass the DATA to the bullet
+        GameObject bulletObj = Instantiate(currentWeapon.bulletPrefab, currentFirePoint.position, currentFirePoint.rotation);
+        
         Bullet bulletScript = bulletObj.GetComponent<Bullet>();
         if (bulletScript != null)
         {
             bulletScript.Initialize(currentWeapon.damage, currentWeapon.bulletSpeed, currentWeapon.bulletLifetime);
         }
 
-        // 3. Play Sound from the Data
         if (audioSource != null && currentWeapon.shootSound != null)
         {
-            // Randomize pitch slightly for better feel
-            audioSource.pitch = Random.Range(0.9f, 1.1f);
             audioSource.PlayOneShot(currentWeapon.shootSound);
         }
     }
 
-    // Call this to change weapons (e.g. from a Pickup or Button)
     public void EquipWeapon(WeaponData newWeapon)
     {
+        if (newWeapon == null || newWeapon.weaponPrefab == null) return;
+
         currentWeapon = newWeapon;
-        if (weaponRenderer != null)
+
+        // 1. Destroy old gun
+        if (currentGunInstance != null) Destroy(currentGunInstance);
+
+        // 2. Instantiate new gun
+        currentGunInstance = Instantiate(newWeapon.weaponPrefab, weaponPivot);
+        
+        // 3. APPLY THE OFFSET HERE (This creates the circle movement)
+        // We move it to the right along the local X axis
+        currentGunInstance.transform.localPosition = new Vector3(newWeapon.weaponHoldDistance, 0, 0);
+        currentGunInstance.transform.localRotation = Quaternion.identity;
+
+        // 4. Find FirePoint
+        currentFirePoint = currentGunInstance.transform.Find("FirePoint");
+
+        if (currentFirePoint == null)
         {
-            weaponRenderer.sprite = newWeapon.weaponSprite;
+            Debug.LogError($"Weapon '{newWeapon.weaponName}' prefab is missing a child named 'FirePoint'!");
         }
     }
 }

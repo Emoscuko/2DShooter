@@ -12,10 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b81b84b01d1be420780563cd5c0f1ba5, type: 3}
   m_Name: PistolData
   m_EditorClassIdentifier: Assembly-CSharp::WeaponData
-  weaponName: 
-  weaponSprite: {fileID: 0}
-  bulletPrefab: {fileID: 0}
-  fireRate: 0
-  damage: 0
-  bulletSpeed: 0
-  bulletLifetime: 0
+  weaponName: Pistol
+  weaponPrefab: {fileID: 4108123607489103365, guid: 9a122f24512b24926a817be4b8f1407d, type: 3}
+  icon: {fileID: 0}
+  bulletPrefab: {fileID: 7938840130412514850, guid: c3f4068092a9e44d899ab9a47118ddf0, type: 3}
+  weaponHoldDistance: 0.35
+  fireRate: 0.2
+  damage: 5
+  bulletSpeed: 8
+  bulletLifetime: 5
+  shootSound: {fileID: 8300000, guid: 5aabce829134e4320a757b0222b9d88c, type: 3}
