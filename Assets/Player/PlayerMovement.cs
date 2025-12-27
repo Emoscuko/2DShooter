@@ -1,5 +1,5 @@
+using System.Collections;
 using UnityEngine;
-using System.Collections; // Required for Coroutines
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -7,11 +7,9 @@ public class PlayerMovement : MonoBehaviour
     public float moveSpeed = 5f;
 
     [Header("Dash Settings")]
-    public float dashSpeed = 15f;    // Speed during the dash
-    public float dashDuration = 0.2f; // How long the dash lasts
-    public float dashCooldown = 1f;   // Time between dashes
-    private bool isDashing;           // Flag to stop normal movement
-    private bool canDash = true;      // Cooldown flag
+    public float dashSpeed = 20f;
+    public float dashDuration = 0.2f;
+    public float dashCooldown = 1f;
 
     [Header("Components")]
     public Rigidbody2D rb;
@@ -21,15 +19,18 @@ public class PlayerMovement : MonoBehaviour
     [Header("Controls")]
     public VirtualJoystick moveJoystick;
 
+    // Logic variables
     [HideInInspector] public Vector2 facingDir = Vector2.down;
     private Vector2 movement;
+    private bool isDashing;
+    private bool canDash = true;
 
     void Update()
     {
-        // 1. Skip normal input if we are currently dashing
+        // 0. Prevent inputs while dashing so player can't change direction mid-dash
         if (isDashing) return;
 
-        // 2. Get Input (Keyboard + Joystick)
+        // 1. Get Input
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
@@ -38,19 +39,19 @@ public class PlayerMovement : MonoBehaviour
             movement = moveJoystick.inputVector;
         }
 
-        // 3. Dash Input Check (Space Bar)
-        if (Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+        // 2. Dash Input for PC (Spacebar)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            StartCoroutine(Dash());
+            AttemptDash();
         }
 
-        // 4. Flip Logic
+        // 3. Flip Logic
         if (movement.x > 0)
             spriteRenderer.flipX = false;
         else if (movement.x < 0)
             spriteRenderer.flipX = true;
 
-        // 5. Update Animator
+        // 4. Update Animator
         if (animator != null)
         {
             animator.SetFloat("Speed", movement.sqrMagnitude);
@@ -66,8 +67,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // 6. Physics Movement (Skip if dashing)
-        if (isDashing) return;
+        if (isDashing) return; // Don't run normal movement logic while dashing
 
         Vector2 finalMove = movement;
         if (finalMove.magnitude > 1) finalMove.Normalize();
@@ -75,26 +75,34 @@ public class PlayerMovement : MonoBehaviour
         rb.linearVelocity = finalMove * moveSpeed;
     }
 
-    // Coroutine to handle the dash physics and cooldown
-    private IEnumerator Dash()
+    // Call this from your Mobile Button or Spacebar
+    public void AttemptDash()
     {
-        canDash = false;
+        if (canDash && !isDashing)
+        {
+            StartCoroutine(DashCoroutine());
+        }
+    }
+
+    private IEnumerator DashCoroutine()
+    {
         isDashing = true;
+        canDash = false;
 
-        // Determine dash direction: Use current movement if moving, otherwise use facing direction
-        Vector2 dashDir = movement.sqrMagnitude > 0.001f ? movement.normalized : facingDir;
+        // Determine dash direction: use current movement, or facing direction if standing still
+        Vector2 dashDirection = movement;
+        if (dashDirection == Vector2.zero) dashDirection = facingDir;
 
-        // Apply high velocity for the duration
-        rb.linearVelocity = dashDir * dashSpeed;
+        // Apply Dash Velocity
+        rb.linearVelocity = dashDirection.normalized * dashSpeed;
 
-        // Optional: If you have a dash animation, trigger it here
-        // animator.SetTrigger("Dash");
+        // Optional: Trigger Dash Animation here if you have one
+        // animator.SetTrigger("Dash"); 
 
         yield return new WaitForSeconds(dashDuration);
 
         isDashing = false;
 
-        // Wait for cooldown
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
     }
